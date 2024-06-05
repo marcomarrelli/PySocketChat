@@ -22,10 +22,13 @@ from config import Settings
 
 if __name__ == "__main__":    
     # Checks if some settings values are wrong and corrects them.
-    if Settings.NUMBER_OF_CLIENTS < 2:
+    if Settings.NUMBER_OF_CLIENTS == 0:
+        pass
+    elif Settings.NUMBER_OF_CLIENTS < 2:
         Settings.NUMBER_OF_CLIENTS = 2
     elif Settings.NUMBER_OF_CLIENTS > Settings.MAX_NUMBER_OF_CLIENTS:
         Settings.NUMBER_OF_CLIENTS = Settings.MAX_NUMBER_OF_CLIENTS
+        
     if Settings.BUFFER_SIZE < 0:
         Settings.BUFFER_SIZE = 1024
 
