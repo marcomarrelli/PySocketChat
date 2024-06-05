@@ -14,6 +14,7 @@
 """
 
 import threading
+from time import sleep
 
 from client import Client
 from server import Server
@@ -34,3 +35,4 @@ if __name__ == "__main__":
     # Start the Client Threads.
     for _ in range(Settings.NUMBER_OF_CLIENTS):
         threading.Thread(target=Client.startClientGUI).start()
+        sleep(0.1)

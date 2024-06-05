@@ -30,11 +30,18 @@ class Server:
             while True:
                 serverConnection, address = Server.serverSocket.accept()
                 Server.connections.append((serverConnection, address))
+
+                # Broadcast the entry message.
+                entryMessage = f'[{address[0]}:{address[1]}] has entered the server.'
+                Server.broadcast(entryMessage, serverConnection)
+                logging.info(entryMessage)
+
+                # Start Client management.                
                 threading.Thread(target=Server.manageClient, args=[serverConnection, address]).start()
         except RuntimeError as e:
-            logging.error(f'Error occurred when creating user thread: {e}.')
+            logging.error(f'Error occurred when creating user thread: {e}.', exc_info=True)
         except Exception as e:
-            logging.error(f'Error occurred when creating socket: {e}.')
+            logging.error(f'Error occurred when creating socket: {e}.', exc_info=True)
         finally:
             # If there are users connected, remove them.
             if Server.connections:
@@ -60,7 +67,7 @@ class Server:
                     Server.removeClient(connection, address)
                     break
             except Exception as e:
-                logging.error(f'Error occured while handling client {address} connection: {e}.')
+                logging.error(f'Error occured while handling client {address} connection: {e}.', exc_info=True)
                 Server.removeClient(connection, address)
                 break
 
@@ -76,7 +83,7 @@ class Server:
             try:
                 clientConnection.send(message.encode(Settings.MESSAGE_ENCODING))
             except Exception as e:
-                logging.error(f'Error occured while broadcasting message to client {_}: {e}.')
+                logging.error(f'Error occured while broadcasting message to client {_}: {e}.', exc_info=True)
                 Server.removeClient(clientConnection, _)
 
 

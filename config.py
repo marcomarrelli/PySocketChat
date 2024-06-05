@@ -10,8 +10,8 @@ class Settings:
     SERVER_ADDRESS: str = '127.0.0.1'
     SERVER_PORT: int = 12500
 
-    NUMBER_OF_CLIENTS: int = 2
-    MAX_NUMBER_OF_CLIENTS: int = 5
+    NUMBER_OF_CLIENTS: int = 3
+    MAX_NUMBER_OF_CLIENTS: int = 10
 
     BUFFER_SIZE: int = 1024
 

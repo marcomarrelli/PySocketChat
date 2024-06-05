@@ -34,21 +34,21 @@ class Client:
             self.root.title(Settings.SERVER_NAME)
 
             # Create the Message Box.
-            self.messages_frame = ttk.Frame(self.root, padding=10)
-            self.messages_frame.grid(row=0, column=0, columnspan=2, sticky=(N, S, E, W))
+            self.mainWindow = ttk.Frame(self.root, padding=10)
+            self.mainWindow.grid(row=0, column=0, columnspan=2, sticky=(N, S, E, W))
 
             # Create the Users Message Area.
-            self.text_area = scrolledtext.ScrolledText(self.messages_frame, wrap='word', state='disabled')
-            self.text_area.grid(row=0, column=0, columnspan=2, sticky=(N, S, E, W))
+            self.messageArea = scrolledtext.ScrolledText(self.mainWindow, wrap='word', state='disabled')
+            self.messageArea.grid(row=0, column=0, columnspan=2, sticky=(N, S, E, W))
 
             # Create the Message Entry.
-            self.message_entry = ttk.Entry(self.messages_frame, width=50)
-            self.message_entry.grid(row=1, column=0, sticky=(E, W))
-            self.message_entry.bind('<Return>', self.sendMessage)
+            self.inputArea = ttk.Entry(self.mainWindow, width=50)
+            self.inputArea.grid(row=1, column=0, sticky=(E, W))
+            self.inputArea.bind('<Return>', self.sendMessage)
 
             # Create the Send Message.
-            self.send_button = ttk.Button(self.messages_frame, text="Send", command=self.sendMessage)
-            self.send_button.grid(row=1, column=1, sticky=(E, W))
+            self.sendButton = ttk.Button(self.mainWindow, text="Send", command=self.sendMessage)
+            self.sendButton.grid(row=1, column=1, sticky=(E, W))
 
             self.root.resizable(False, False)
             self.root.protocol("WM_DELETE_WINDOW", self.closeConnection)
@@ -59,8 +59,9 @@ class Client:
             logging.info('Connected to chat')
 
         except Exception as e:
-            logging.error(f'Error connecting to server socket: {e}')
+            logging.error(f'Error connecting to server socket: {e}', exc_info=True)
             self.clientSocket.close()
+            root.destroy()
 
 
     def manageMessage(self, connection: socket.socket):
@@ -78,7 +79,7 @@ class Client:
                     connection.close()
                     break
             except Exception as e:
-                logging.error(f'Error handling message from server: {e}')
+                logging.error(f'Error handling message from server: {e}', exc_info=True)
                 connection.close()
                 break
 
@@ -89,10 +90,10 @@ class Client:
         '''
         
         # Add the message to the text area.
-        self.text_area.configure(state='normal')
-        self.text_area.insert(END, msg + '\n')
-        self.text_area.configure(state='disabled')
-        self.text_area.yview(END)
+        self.messageArea.configure(state='normal')
+        self.messageArea.insert(END, msg + '\n')
+        self.messageArea.configure(state='disabled')
+        self.messageArea.yview(END)
 
 
     def sendMessage(self, event: None = None):
@@ -101,14 +102,14 @@ class Client:
         '''
         
         # Get the message entry and send it as an encoded message.
-        msg = self.message_entry.get()
+        msg = self.inputArea.get()
         if not msg:
             return
         try:
             self.clientSocket.send(msg.encode(Settings.MESSAGE_ENCODING))
-            self.message_entry.delete(0, END)
+            self.inputArea.delete(0, END)
         except Exception as e:
-            logging.error(f'Error occured when sending message: {e}.')
+            logging.error(f'Error occured when sending message: {e}.', exc_info=True)
 
 
     def closeConnection(self, event: None = None):
@@ -119,7 +120,7 @@ class Client:
         try:
             self.clientSocket.close()
         except Exception as e:
-            logging.error(f'Error occured while closing socket: {e}.')
+            logging.error(f'Error occured while closing socket: {e}.', exc_info=True)
 
         self.root.quit()
 
@@ -133,3 +134,7 @@ class Client:
         root = Tk()
         Client(root)
         root.mainloop()
+
+
+if __name__ == "__main__":
+    Client.startClientGUI()
