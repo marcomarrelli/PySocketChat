@@ -16,3 +16,5 @@ class Settings:
     BUFFER_SIZE: int = 1024
 
     MESSAGE_ENCODING: str = "utf8"
+
+    EXCEPTIONS_INFO: bool = False

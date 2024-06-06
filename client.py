@@ -59,7 +59,7 @@ class Client:
             logging.info('Connected to chat')
 
         except Exception as e:
-            logging.error(f'Error connecting to server socket: {e}', exc_info=True)
+            logging.error(f'Error connecting to server socket: {e}', exc_info=Settings.EXCEPTIONS_INFO)
             self.clientSocket.close()
             root.destroy()
 
@@ -79,7 +79,7 @@ class Client:
                     connection.close()
                     break
             except Exception as e:
-                logging.error(f'Error handling message from server: {e}', exc_info=True)
+                logging.error(f'Error handling message from server: {e}', exc_info=Settings.EXCEPTIONS_INFO)
                 connection.close()
                 break
 
@@ -109,7 +109,7 @@ class Client:
             self.clientSocket.send(msg.encode(Settings.MESSAGE_ENCODING))
             self.inputArea.delete(0, END)
         except Exception as e:
-            logging.error(f'Error occured when sending message: {e}.', exc_info=True)
+            logging.error(f'Error occured when sending message: {e}.', exc_info=Settings.EXCEPTIONS_INFO)
 
 
     def closeConnection(self, event: None = None):
@@ -120,7 +120,7 @@ class Client:
         try:
             self.clientSocket.close()
         except Exception as e:
-            logging.error(f'Error occured while closing socket: {e}.', exc_info=True)
+            logging.error(f'Error occured while closing socket: {e}.', exc_info=Settings.EXCEPTIONS_INFO)
 
         self.root.quit()
 
